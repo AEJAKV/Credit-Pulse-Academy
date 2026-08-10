@@ -1,0 +1,34 @@
+
+> credit-pulse-course-delivery@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.254.104:3000
+- Environments: .env.local
+✓ Ready in 5.2s
+✓ Running next.config took 17ms
+Creating turbopack project {
+  dir: 'C:\\Users\\ASUS TUF\\Downloads\\credit-pulse-course-delivery',
+  testMode: true
+}
+
+ GET /course/understanding-canadian-credit-scores 200 in 769ms (next.js: 588ms, application-code: 181ms)
+ GET /admin 200 in 66ms (next.js: 32ms, application-code: 35ms)
+ GET /course/understanding-canadian-credit-scores 200 in 47ms (next.js: 12ms, application-code: 35ms)
+ GET /admin 200 in 37ms (next.js: 8ms, application-code: 30ms)
+ GET /admin 200 in 56ms (next.js: 8ms, application-code: 49ms)
+ GET /course/understanding-canadian-credit-scores 200 in 53ms (next.js: 9ms, application-code: 43ms)
+ GET /course/understanding-canadian-credit-scores 200 in 58ms (next.js: 10ms, application-code: 48ms)
+✓ Compiled in 484ms
+✓ Compiled in 51ms
+ GET /admin 200 in 178ms (next.js: 121ms, application-code: 58ms)
+ GET /course/understanding-canadian-credit-scores 200 in 195ms (next.js: 46ms, application-code: 148ms)
+ GET /course/understanding-canadian-credit-scores 200 in 215ms (next.js: 83ms, application-code: 132ms)
+✓ Compiled in 53ms
+ GET /course/understanding-canadian-credit-scores 200 in 106ms (next.js: 16ms, application-code: 90ms)
+ GET /admin 200 in 63ms (next.js: 19ms, application-code: 43ms)
+ GET /course/understanding-canadian-credit-scores 200 in 63ms (next.js: 34ms, application-code: 28ms)
+✓ Compiled in 54ms
+✓ Compiled in 26ms
+ GET /course/understanding-canadian-credit-scores 200 in 40ms (next.js: 6ms, application-code: 34ms)
