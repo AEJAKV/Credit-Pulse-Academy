@@ -77,6 +77,163 @@ const silverCourses = [
   },
 ];
 
+const goldCourses = [
+  {
+    title: "Canadian Benefits and Financial Support",
+    modules: [
+      "Canada Child Benefit",
+      "GST/HST Credit",
+      "Canada Workers Benefit",
+      "Disability Tax Credit",
+      "Registered Disability Savings Plan",
+      "Old Age Security",
+      "Guaranteed Income Supplement",
+      "Canada Pension Plan",
+      "CPP Disability Benefits",
+      "Employment Insurance",
+      "Provincial Income Support",
+      "Provincial Disability Programs",
+      "Rent Assistance",
+      "Utility Assistance",
+      "Dental-Care Benefits",
+      "Prescription Assistance",
+      "Student Grants",
+      "Apprenticeship Funding",
+      "Indigenous Benefits and Programs",
+      "Newcomer Settlement Supports",
+    ],
+  },
+  {
+    title: "Additional Income Opportunities",
+    modules: [
+      "Senior Companion Services",
+      "Online Tutoring",
+      "Reselling Products",
+      "Marketplace Flipping",
+      "Getting Your First Customer",
+    ],
+  },
+];
+
+const platinumCourses = [
+  {
+    title: "Grants, Rebates and Special Programs",
+    modules: [
+      "Veteran Benefits",
+      "Senior Home-Renovation Programs",
+      "Energy-Efficiency Rebates",
+      "Training Grants",
+      "Small-Business Grants",
+      "Wage Subsidies",
+      "First-Time Home Buyer Programs",
+      "Tax Credits People Commonly Miss",
+      "Provincial Benefit Finders",
+      "How to Apply Without Getting Scammed",
+    ],
+  },
+  {
+    title: "Canadian Tax and Wealth Foundations",
+    modules: [
+      "Understanding a Canadian Paycheque",
+      "Marginal Tax Rates",
+      "Filing an Income-Tax Return",
+      "Common Tax Deductions and Credits",
+      "TFSA Basics",
+      "RRSP Basics",
+      "FHSA Basics",
+      "RESP Basics",
+      "RDSP Basics",
+      "RRIF Basics",
+      "Tax-Free Versus Tax-Deferred Growth",
+      "Investment Fees",
+      "ETFs and Mutual Funds",
+      "Risk Tolerance",
+      "Compound Growth",
+    ],
+  },
+];
+
+const diamondCourses = [
+  {
+    title: "Advanced Tax and Wealth",
+    modules: [
+      "Canadian Retirement Planning",
+      "Estate and Beneficiary Basics",
+      "Self-Employment Taxes",
+      "GST/HST for Small Businesses",
+      "Keeping CRA Records",
+    ],
+  },
+  {
+    title: "Fitness Foundations",
+    modules: [
+      "Beginner Fitness for Men",
+      "Beginner Fitness for Women",
+      "Home Workouts",
+      "Gym Fundamentals",
+      "Strength Training",
+      "Muscle Building",
+      "Fat-Loss Fundamentals",
+      "Low-Impact Fitness",
+      "Fitness Over 40",
+      "Fitness Over 50",
+      "Mobility",
+      "Flexibility",
+      "Core Strength",
+      "Resistance-Band Training",
+      "Bodyweight Training",
+    ],
+  },
+  {
+    title: "Digital Income Courses",
+    modules: [
+      "Digital Products",
+      "Affiliate Marketing",
+      "Print on Demand",
+      "Ecommerce",
+      "AI-Assisted Businesses",
+    ],
+  },
+];
+
+const eliteCourses = [
+  {
+    title: "Advanced Fitness and Healthy Living",
+    modules: [
+      "HIIT",
+      "Walking Programs",
+      "Running Programs",
+      "Boxing Fitness",
+      "Kickboxing Fitness",
+      "Yoga",
+      "Pilates",
+      "Desk-Worker Mobility",
+      "Healthy Meal Planning",
+      "Protein and Nutrition Basics",
+      "Sleep and Recovery",
+      "Habit Building",
+      "Stress Management",
+      "Thirty-Day Challenges",
+      "Twelve-Week Transformations",
+    ],
+  },
+  {
+    title: "Business Setup and Scaling",
+    modules: [
+      "Social-Media Management",
+      "Local Lead Generation",
+      "Starting a Small Corporation",
+      "Sole Proprietor Versus Corporation",
+      "Canadian Business Registration",
+      "Basic Bookkeeping",
+      "GST/HST",
+      "Pricing Services",
+      "Building Recurring Revenue",
+      "Moving From Side Hustle to Business",
+    ],
+  },
+];
+
 const publishedCourseRoutes = [
   "/course/understanding-canadian-credit-scores",
   "/course/equifax-canada-versus-transunion-canada",
@@ -96,6 +253,22 @@ function SilverCatalog() {
   return <div className="tier-content"><p className="tier-includes">Includes all Starter Courses</p>{silverCourses.map((course,courseIndex)=><details className="catalog-course" key={course.title}><summary><span>{`COURSE ${courseIndex+1}`}</span><div><strong>{course.title}</strong><small>{course.modules.length} modules · {course.modules.length} planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{course.modules.map((title,moduleIndex)=><li key={title}><span>{`${courseIndex+1}.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details>)}</div>;
 }
 
+function GoldCatalog() {
+  return <div className="tier-content"><div className="tier-inheritance"><p className="tier-includes">Includes all Starter Courses</p><p className="tier-includes">Includes all Silver Courses</p></div>{goldCourses.map((course,courseIndex)=><details className="catalog-course" key={course.title}><summary><span>{`COURSE ${courseIndex+1}`}</span><div><strong>{course.title}</strong><small>{course.modules.length} modules · {course.modules.length} planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{course.modules.map((title,moduleIndex)=><li key={title}><span>{`${courseIndex+1}.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details>)}</div>;
+}
+
+function PlatinumCatalog() {
+  return <div className="tier-content"><div className="tier-inheritance"><p className="tier-includes">Includes all Starter Courses</p><p className="tier-includes">Includes all Silver Courses</p><p className="tier-includes">Includes all Gold Courses</p></div>{platinumCourses.map((course,courseIndex)=><details className="catalog-course" key={course.title}><summary><span>{`COURSE ${courseIndex+1}`}</span><div><strong>{course.title}</strong><small>{course.modules.length} modules · {course.modules.length} planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{course.modules.map((title,moduleIndex)=><li key={title}><span>{`${courseIndex+1}.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details>)}</div>;
+}
+
+function DiamondCatalog() {
+  return <div className="tier-content"><div className="tier-inheritance"><p className="tier-includes">Includes all Starter Courses</p><p className="tier-includes">Includes all Silver Courses</p><p className="tier-includes">Includes all Gold Courses</p><p className="tier-includes">Includes all Platinum Courses</p></div>{diamondCourses.map((course,courseIndex)=><details className="catalog-course" key={course.title}><summary><span>{`COURSE ${courseIndex+1}`}</span><div><strong>{course.title}</strong><small>{course.modules.length} modules · {course.modules.length} planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{course.modules.map((title,moduleIndex)=><li key={title}><span>{`${courseIndex+1}.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details>)}</div>;
+}
+
+function EliteCatalog() {
+  return <div className="tier-content"><div className="tier-inheritance"><p className="tier-includes">Includes all Starter Courses</p><p className="tier-includes">Includes all Silver Courses</p><p className="tier-includes">Includes all Gold Courses</p><p className="tier-includes">Includes all Platinum Courses</p><p className="tier-includes">Includes all Diamond Courses</p></div>{eliteCourses.map((course,courseIndex)=><details className="catalog-course" key={course.title}><summary><span>{`COURSE ${courseIndex+1}`}</span><div><strong>{course.title}</strong><small>{course.modules.length} modules · {course.modules.length} planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{course.modules.map((title,moduleIndex)=><li key={title}><span>{`${courseIndex+1}.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details>)}</div>;
+}
+
 export function AdminLogin() {
   const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const router=useRouter();
   async function submit(e){e.preventDefault(); setBusy(true); setError(""); const data=Object.fromEntries(new FormData(e.currentTarget)); const res=await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}); if(res.ok) router.refresh(); else {setError("Email or password is incorrect.");setBusy(false);}}
@@ -112,7 +285,7 @@ export function AdminDashboard() {
   function exportCsv(){const head=["Name","Email","Lesson","Response","Submitted at"];const rows=submissions.map(s=>[s.name,s.email,s.lessonTitle,s.response,s.submittedAt]);const csv=[head,...rows].map(r=>r.map(v=>`"${String(v||"").replaceAll('"','""')}"`).join(",")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="credit-pulse-submissions.csv";a.click();}
   return <div className="admin-app"><aside className="admin-side"><Brand light/><nav>{["Overview","Courses","Submissions","Settings"].map(x=><button key={x} className={tab===x?"active":""} onClick={()=>setTab(x)}>{x}</button>)}</nav><button onClick={logout}>Sign out</button></aside><main className="admin-main"><header><div><p className="eyebrow">CREDIT PULSE ADMIN</p><h1>{tab}</h1></div><div className="admin-avatar">RO</div></header>
     {tab==="Overview"&&<><section className="stat-grid"><article><span>Published courses</span><b>10</b><small>All Credit Foundations modules are active</small></article><article><span>Activity submissions</span><b>{submissions.length}</b><small>Saved in this prototype</small></article><article><span>Learners observed</span><b>{new Set(submissions.map(x=>x.email)).size}</b><small>Unique email addresses</small></article></section><section className="admin-panel"><div className="panel-title"><div><p className="eyebrow">SYSTEM READINESS</p><h2>What works now</h2></div></div><div className="readiness"><article><span>✓</span><div><b>Course and admin password gates</b><p>Protected with signed, server-issued cookies.</p></div></article><article><span>✓</span><div><b>Single-page course check-in</b><p>One activity records completion for the full course.</p></div></article><article className="pending"><span>2</span><div><b>Production database and email</b><p>Connect before real learners arrive.</p></div></article></div></section></>}
-    {tab==="Courses"&&<section className="admin-catalog"><div className="catalog-intro"><div><p className="eyebrow">PROGRAM CATALOG</p><h2>Credit Pulse learning tiers</h2><p>Organize courses and modules by membership package.</p></div><span><b>6</b> tiers</span></div><div className="tier-list">{membershipTiers.map((tier,index)=><details className={`tier-package tier-${tier.toLowerCase()}`} open={index===0} key={tier}><summary><span className="tier-index">{String(index+1).padStart(2,"0")}</span><div><small>{tier.toUpperCase()} PACKAGE</small><strong>{tier}</strong></div><span className={`tier-count ${index<2?"active":""}`}>{index===0?"2 courses":index===1?"3 courses":"Planned"}</span><i aria-hidden="true">+</i></summary>{index===0?<div className="tier-content"><details className="catalog-course" open><summary><span>COURSE 1</span><div><strong>Credit Foundations</strong><small>10 modules · 10 published</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{creditFoundationModules.map((title,moduleIndex)=>{const published=moduleIndex<10;return <li className={published?"published":""} key={title}><span>{`1.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>{published?"Published":"Planned"}</small></div>{published&&<a href={publishedCourseRoutes[moduleIndex]} target="_blank" rel="noreferrer" aria-label={`Open ${title} learner view`}>Open ↗</a>}</li>})}</ol></details><details className="catalog-course"><summary><span>COURSE 2</span><div><strong>Money Foundations</strong><small>15 modules · 15 planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{moneyFoundationModules.map((title,moduleIndex)=><li key={title}><span>{`2.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details></div>:index===1?<SilverCatalog/>:<div className="tier-empty"><b>{tier} curriculum is planned</b><p>Courses for this package can be added here as they are developed.</p></div>}</details>)}</div></section>}
+    {tab==="Courses"&&<section className="admin-catalog"><div className="catalog-intro"><div><p className="eyebrow">PROGRAM CATALOG</p><h2>Credit Pulse learning tiers</h2><p>Organize courses and modules by membership package.</p></div><span><b>6</b> tiers</span></div><div className="tier-list">{membershipTiers.map((tier,index)=><details className={`tier-package tier-${tier.toLowerCase()}`} open={index===0} key={tier}><summary><span className="tier-index">{String(index+1).padStart(2,"0")}</span><div><small>{tier.toUpperCase()} PACKAGE</small><strong>{tier}</strong></div><span className="tier-count active">{index===1||index===4?"3 courses":"2 courses"}</span><i aria-hidden="true">+</i></summary>{index===0?<div className="tier-content"><details className="catalog-course" open><summary><span>COURSE 1</span><div><strong>Credit Foundations</strong><small>10 modules · 10 published</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{creditFoundationModules.map((title,moduleIndex)=>{const published=moduleIndex<10;return <li className={published?"published":""} key={title}><span>{`1.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>{published?"Published":"Planned"}</small></div>{published&&<a href={publishedCourseRoutes[moduleIndex]} target="_blank" rel="noreferrer" aria-label={`Open ${title} learner view`}>Open ↗</a>}</li>})}</ol></details><details className="catalog-course"><summary><span>COURSE 2</span><div><strong>Money Foundations</strong><small>15 modules · 15 planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{moneyFoundationModules.map((title,moduleIndex)=><li key={title}><span>{`2.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details></div>:index===1?<SilverCatalog/>:index===2?<GoldCatalog/>:index===3?<PlatinumCatalog/>:index===4?<DiamondCatalog/>:<EliteCatalog/>}</details>)}</div></section>}
     {tab==="Submissions"&&<section className="admin-panel"><div className="panel-title"><div><p className="eyebrow">LEARNER ACTIVITY</p><h2>Activity responses</h2></div><button className="secondary" onClick={exportCsv} disabled={!submissions.length}>Export CSV</button></div><input className="search" placeholder="Search name, email or lesson…" value={query} onChange={e=>setQuery(e.target.value)}/>{filtered.length?<div className="table-wrap"><table><thead><tr><th>Learner</th><th>Lesson</th><th>Response</th><th>Submitted</th></tr></thead><tbody>{filtered.map((s,i)=><tr key={`${s.submittedAt}-${i}`}><td><b>{s.name}</b><small>{s.email}</small></td><td>{String(s.lesson).padStart(2,"0")} · {s.lessonTitle}</td><td>{s.response}</td><td>{new Date(s.submittedAt).toLocaleDateString("en-CA")}</td></tr>)}</tbody></table></div>:<div className="empty"><b>No activity responses yet</b><p>Prototype responses from this browser will appear here.</p></div>}</section>}
     {tab==="Settings"&&<section className="admin-panel settings"><p className="eyebrow">LAUNCH CHECKLIST</p><h2>Production connections</h2><div><article><b>Course access</b><span className="status">Ready</span><p>Set the course password in Vercel environment variables.</p></article><article><b>Learner data</b><span className="status pending-tag">Connect</span><p>Add Supabase or Neon so submissions sync across devices.</p></article><article><b>Email notifications</b><span className="status pending-tag">Connect</span><p>Add Resend after the database so every activity can notify your team.</p></article></div></section>}
   </main></div>;
