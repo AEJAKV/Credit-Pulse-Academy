@@ -16,6 +16,67 @@ const creditFoundationModules = [
   "The 90-Day Credit Improvement Plan",
 ];
 
+const moneyFoundationModules = [
+  "Building a Canadian Household Budget",
+  "Managing Money Between Paydays",
+  "Emergency Funds",
+  "Canadian Bank Accounts and Fees",
+  "Credit Unions Versus Banks",
+  "Managing Overdraft",
+  "Understanding Interest and APR",
+  "Paying Down High-Interest Debt",
+  "Snowball Versus Avalanche Debt Repayment",
+  "Managing Variable Income",
+  "Managing Finances as a Couple",
+  "Financial Planning for Single Parents",
+  "Avoiding Predatory Financial Products",
+  "Financing Major Purchases",
+  "The 30-Day Financial Reset",
+];
+
+const silverCourses = [
+  {
+    title: "Advanced Canadian Credit",
+    modules: [
+      "Rebuilding Credit After Collections",
+      "Rebuilding Credit After Bankruptcy",
+      "Rebuilding Credit After a Consumer Proposal",
+      "Dealing With Canadian Collection Agencies",
+      "Statutes of Limitation by Province",
+      "Identity Theft and Credit Fraud",
+      "Preparing for a Mortgage",
+      "Preparing for an Auto Loan",
+      "Credit Building for Newcomers",
+      "Credit Building After Divorce",
+    ],
+  },
+  {
+    title: "Major Money Decisions",
+    modules: [
+      "Buying Versus Leasing",
+      "Saving for a Home",
+      "Managing Rental Costs",
+      "Insurance Basics",
+      "Financial Fraud and Scams",
+    ],
+  },
+  {
+    title: "Instant Cash Side Hustles",
+    modules: [
+      "Starting a Side Hustle",
+      "Gig Work in Canada",
+      "Freelancing",
+      "Virtual Assistance",
+      "Cleaning Businesses",
+      "Property Maintenance",
+      "Snow Removal",
+      "Lawn Care",
+      "Mobile Detailing",
+      "Pet Services",
+    ],
+  },
+];
+
 const publishedCourseRoutes = [
   "/course/understanding-canadian-credit-scores",
   "/course/equifax-canada-versus-transunion-canada",
@@ -30,6 +91,10 @@ const publishedCourseRoutes = [
 ];
 
 const membershipTiers = ["Starter", "Silver", "Gold", "Platinum", "Diamond", "Elite"];
+
+function SilverCatalog() {
+  return <div className="tier-content"><p className="tier-includes">Includes all Starter Courses</p>{silverCourses.map((course,courseIndex)=><details className="catalog-course" key={course.title}><summary><span>{`COURSE ${courseIndex+1}`}</span><div><strong>{course.title}</strong><small>{course.modules.length} modules · {course.modules.length} planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{course.modules.map((title,moduleIndex)=><li key={title}><span>{`${courseIndex+1}.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details>)}</div>;
+}
 
 export function AdminLogin() {
   const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const router=useRouter();
@@ -47,7 +112,7 @@ export function AdminDashboard() {
   function exportCsv(){const head=["Name","Email","Lesson","Response","Submitted at"];const rows=submissions.map(s=>[s.name,s.email,s.lessonTitle,s.response,s.submittedAt]);const csv=[head,...rows].map(r=>r.map(v=>`"${String(v||"").replaceAll('"','""')}"`).join(",")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="credit-pulse-submissions.csv";a.click();}
   return <div className="admin-app"><aside className="admin-side"><Brand light/><nav>{["Overview","Courses","Submissions","Settings"].map(x=><button key={x} className={tab===x?"active":""} onClick={()=>setTab(x)}>{x}</button>)}</nav><button onClick={logout}>Sign out</button></aside><main className="admin-main"><header><div><p className="eyebrow">CREDIT PULSE ADMIN</p><h1>{tab}</h1></div><div className="admin-avatar">RO</div></header>
     {tab==="Overview"&&<><section className="stat-grid"><article><span>Published courses</span><b>10</b><small>All Credit Foundations modules are active</small></article><article><span>Activity submissions</span><b>{submissions.length}</b><small>Saved in this prototype</small></article><article><span>Learners observed</span><b>{new Set(submissions.map(x=>x.email)).size}</b><small>Unique email addresses</small></article></section><section className="admin-panel"><div className="panel-title"><div><p className="eyebrow">SYSTEM READINESS</p><h2>What works now</h2></div></div><div className="readiness"><article><span>✓</span><div><b>Course and admin password gates</b><p>Protected with signed, server-issued cookies.</p></div></article><article><span>✓</span><div><b>Single-page course check-in</b><p>One activity records completion for the full course.</p></div></article><article className="pending"><span>2</span><div><b>Production database and email</b><p>Connect before real learners arrive.</p></div></article></div></section></>}
-    {tab==="Courses"&&<section className="admin-catalog"><div className="catalog-intro"><div><p className="eyebrow">PROGRAM CATALOG</p><h2>Credit Pulse learning tiers</h2><p>Organize courses and modules by membership package.</p></div><span><b>6</b> tiers</span></div><div className="tier-list">{membershipTiers.map((tier,index)=><details className={`tier-package tier-${tier.toLowerCase()}`} open={index===0} key={tier}><summary><span className="tier-index">{String(index+1).padStart(2,"0")}</span><div><small>{tier.toUpperCase()} PACKAGE</small><strong>{tier}</strong></div><span className={`tier-count ${index===0?"active":""}`}>{index===0?"2 courses":"Planned"}</span><i aria-hidden="true">+</i></summary>{index===0?<div className="tier-content"><details className="catalog-course" open><summary><span>COURSE 1</span><div><strong>Credit Foundations</strong><small>10 modules · 10 published</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{creditFoundationModules.map((title,moduleIndex)=>{const published=moduleIndex<10;return <li className={published?"published":""} key={title}><span>{`1.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>{published?"Published":"Planned"}</small></div>{published&&<a href={publishedCourseRoutes[moduleIndex]} target="_blank" rel="noreferrer" aria-label={`Open ${title} learner view`}>Open ↗</a>}</li>})}</ol></details><details className="catalog-course"><summary><span>COURSE 2</span><div><strong>Money Foundations</strong><small>Curriculum planning</small></div><i aria-hidden="true">+</i></summary><div className="course-empty"><b>Modules coming next</b><p>Add Money Foundations modules when the curriculum is ready.</p></div></details></div>:<div className="tier-empty"><b>{tier} curriculum is planned</b><p>Courses for this package can be added here as they are developed.</p></div>}</details>)}</div></section>}
+    {tab==="Courses"&&<section className="admin-catalog"><div className="catalog-intro"><div><p className="eyebrow">PROGRAM CATALOG</p><h2>Credit Pulse learning tiers</h2><p>Organize courses and modules by membership package.</p></div><span><b>6</b> tiers</span></div><div className="tier-list">{membershipTiers.map((tier,index)=><details className={`tier-package tier-${tier.toLowerCase()}`} open={index===0} key={tier}><summary><span className="tier-index">{String(index+1).padStart(2,"0")}</span><div><small>{tier.toUpperCase()} PACKAGE</small><strong>{tier}</strong></div><span className={`tier-count ${index<2?"active":""}`}>{index===0?"2 courses":index===1?"3 courses":"Planned"}</span><i aria-hidden="true">+</i></summary>{index===0?<div className="tier-content"><details className="catalog-course" open><summary><span>COURSE 1</span><div><strong>Credit Foundations</strong><small>10 modules · 10 published</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{creditFoundationModules.map((title,moduleIndex)=>{const published=moduleIndex<10;return <li className={published?"published":""} key={title}><span>{`1.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>{published?"Published":"Planned"}</small></div>{published&&<a href={publishedCourseRoutes[moduleIndex]} target="_blank" rel="noreferrer" aria-label={`Open ${title} learner view`}>Open ↗</a>}</li>})}</ol></details><details className="catalog-course"><summary><span>COURSE 2</span><div><strong>Money Foundations</strong><small>15 modules · 15 planned</small></div><i aria-hidden="true">+</i></summary><ol className="module-list">{moneyFoundationModules.map((title,moduleIndex)=><li key={title}><span>{`2.${moduleIndex+1}`}</span><div><strong>{title}</strong><small>Planned</small></div></li>)}</ol></details></div>:index===1?<SilverCatalog/>:<div className="tier-empty"><b>{tier} curriculum is planned</b><p>Courses for this package can be added here as they are developed.</p></div>}</details>)}</div></section>}
     {tab==="Submissions"&&<section className="admin-panel"><div className="panel-title"><div><p className="eyebrow">LEARNER ACTIVITY</p><h2>Activity responses</h2></div><button className="secondary" onClick={exportCsv} disabled={!submissions.length}>Export CSV</button></div><input className="search" placeholder="Search name, email or lesson…" value={query} onChange={e=>setQuery(e.target.value)}/>{filtered.length?<div className="table-wrap"><table><thead><tr><th>Learner</th><th>Lesson</th><th>Response</th><th>Submitted</th></tr></thead><tbody>{filtered.map((s,i)=><tr key={`${s.submittedAt}-${i}`}><td><b>{s.name}</b><small>{s.email}</small></td><td>{String(s.lesson).padStart(2,"0")} · {s.lessonTitle}</td><td>{s.response}</td><td>{new Date(s.submittedAt).toLocaleDateString("en-CA")}</td></tr>)}</tbody></table></div>:<div className="empty"><b>No activity responses yet</b><p>Prototype responses from this browser will appear here.</p></div>}</section>}
     {tab==="Settings"&&<section className="admin-panel settings"><p className="eyebrow">LAUNCH CHECKLIST</p><h2>Production connections</h2><div><article><b>Course access</b><span className="status">Ready</span><p>Set the course password in Vercel environment variables.</p></article><article><b>Learner data</b><span className="status pending-tag">Connect</span><p>Add Supabase or Neon so submissions sync across devices.</p></article><article><b>Email notifications</b><span className="status pending-tag">Connect</span><p>Add Resend after the database so every activity can notify your team.</p></article></div></section>}
   </main></div>;
