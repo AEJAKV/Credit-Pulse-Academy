@@ -238,7 +238,10 @@ export function SinglePageCourse({ course }) {
 
           <section className="reader-section" id="action">
             <SectionHeading number="06" title="Credit score check-in" />
-            <p className="reader-lead">Write each answer in your own words. This single check-in completes Course 1.1.</p>
+            <div className="checkin-intro">
+              <p className="reader-lead">Complete this check-in to earn 20 points on Credit Pulse and finish Course 1.1!</p>
+              <p>Answer each question in your own words below.</p>
+            </div>
             {complete ? <Completion learner={learner} /> : <Activity learner={learner} onSubmit={submitActivity} />}
           </section>
 
@@ -372,7 +375,7 @@ function Priority({ number, title, children }) {
 }
 
 function Activity({ learner, onSubmit }) {
-  return <form className="checkin-form" onSubmit={onSubmit}>
+  return <div className="calculator-frame checkin-form-frame"><form className="checkin-form" onSubmit={onSubmit}>
     <div className="checkin-identity"><label>Full name<input name="name" defaultValue={learner.name} required autoComplete="name" /></label><label>Email address<input name="email" type="email" defaultValue={learner.email} required autoComplete="email" /></label></div>
     <label><span><b>1</b>Name one credit behaviour that is completely within your control.</span><textarea name="behaviour" rows="3" required /></label>
     <label><span><b>2</b>You have a credit score of 620. What might that mean to a lender?</span><textarea name="scoreMeaning" rows="3" required /></label>
@@ -382,7 +385,7 @@ function Activity({ learner, onSubmit }) {
     <label className="checkin-consent"><input type="checkbox" required /><span>I reviewed my answers and understand that this is educational information, not financial advice.</span></label>
     <button className="reader-primary">Complete Course 1.1 <ArrowRight /></button>
     <small><ShieldCheck />Do not include a SIN, account number, password or other sensitive financial information.</small>
-  </form>;
+  </form></div>;
 }
 
 function Completion({ learner }) {
