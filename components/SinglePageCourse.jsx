@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   CircleGauge,
+  CircleDollarSign,
   Clock3,
   CreditCard,
   FileCheck2,
@@ -239,7 +240,7 @@ export function SinglePageCourse({ course }) {
           <section className="reader-section" id="action">
             <SectionHeading number="06" title="Credit score check-in" />
             <div className="checkin-intro">
-              <p className="reader-lead">Complete this check-in to earn 20 points on Credit Pulse and finish Course 1.1!</p>
+              <div className="activity-reward-pill"><CircleDollarSign aria-hidden="true" /><span>Complete this activity and get <strong>$5</strong> plus <strong>20 Credit Pulse points</strong></span></div>
               <p>Answer each question in your own words below.</p>
             </div>
             {complete ? <Completion learner={learner} /> : <Activity learner={learner} onSubmit={submitActivity} />}

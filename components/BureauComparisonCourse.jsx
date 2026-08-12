@@ -215,7 +215,6 @@ export function BureauComparisonCourse({ course }) {
             <button className="reader-primary">Complete Course 1.2 <ArrowRight /></button>
             <small><ShieldCheck />Do not include a SIN, full account number, password or other sensitive financial information.</small>
           </form></div>}
-          <details className="thinking-guide"><summary>Check Your Thinking <ChevronDown /></summary><div><p><b>11–12.</b> Your answers will depend on your reports. The important habit is recording the balance together with its reporting date, not copying the number by itself.</p><p><b>13.</b> Check reporting dates first. Then compare recent statements or payment activity and confirm whether the creditor reports to both bureaus.</p><p><b>14.</b> Prompt attention. Confirm that the name is not a familiar lender under a different legal name. If you still do not recognize the account, follow the bureau/lender verification or dispute process and consider fraud steps when appropriate.</p><p><b>15.</b> False. Different reporting dates, lender reporting relationships and display formats can create legitimate differences.</p></div></details>
         </section>
 
         <section className="reader-section reader-glossary" id="glossary"><Heading number="07" title="Glossary of terms" /><dl>{course12Glossary.map(([term, definition]) => <div key={term}><dt>{term}</dt><dd>{definition}</dd></div>)}</dl></section>
