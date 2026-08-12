@@ -35,7 +35,7 @@ export function PasswordGate({ course }) {
     const response = await fetch("/api/course-access", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ password, courseId: course.id }),
     });
 
     if (response.ok) {

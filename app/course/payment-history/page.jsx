@@ -8,6 +8,6 @@ export const dynamic = "force-dynamic";
 
 export default async function CoursePage() {
   const jar = await cookies();
-  const unlocked = await verifySession(jar.get("cp_course_access")?.value, "course1");
+  const unlocked = await verifySession(jar.get("cp_course_access")?.value, course18.id);
   return unlocked ? <PaymentHistoryCourse course={course18} /> : <PasswordGate course={course18} />;
 }

@@ -28,10 +28,10 @@ Mirrors `components/MortgagePrepCourse.jsx`. One `"use client"` component per mo
 
 ### 3. `app/course/gold/<slug>/page.jsx`
 
-Mirrors `app/course/silver/preparing-for-a-mortgage/page.jsx` exactly — same gate, same cookie name and access level (there is no per-tier access level; every course, Starter through Gold, gates on `verifySession(jar.get("cp_course_access")?.value, "course1")`):
+Mirrors `app/course/silver/preparing-for-a-mortgage/page.jsx` exactly — same gate, same cookie name and shared password (there is no per-tier password; every course, Starter through Gold, checks the same `COURSE_ACCESS_PASSWORD`). The session is scoped per course via `verifySession(jar.get("cp_course_access")?.value, goldCourse114.id)` — the second argument is always that module's own `course.id`, never a shared literal, so unlocking one course never unlocks another:
 
 ```js
-import{cookies}from"next/headers";import{goldCourse114}from"../../../../lib/gold-course-1-14-data";import{verifySession}from"../../../../lib/session";import{PasswordGate}from"../../../../components/PasswordGate";import{CanadaChildBenefitCourse}from"../../../../components/CanadaChildBenefitCourse";export const dynamic="force-dynamic";export default async function CoursePage(){const jar=await cookies();const unlocked=await verifySession(jar.get("cp_course_access")?.value,"course1");return unlocked?<CanadaChildBenefitCourse course={goldCourse114}/>:<PasswordGate course={goldCourse114}/>}
+import{cookies}from"next/headers";import{goldCourse114}from"../../../../lib/gold-course-1-14-data";import{verifySession}from"../../../../lib/session";import{PasswordGate}from"../../../../components/PasswordGate";import{CanadaChildBenefitCourse}from"../../../../components/CanadaChildBenefitCourse";export const dynamic="force-dynamic";export default async function CoursePage(){const jar=await cookies();const unlocked=await verifySession(jar.get("cp_course_access")?.value,goldCourse114.id);return unlocked?<CanadaChildBenefitCourse course={goldCourse114}/>:<PasswordGate course={goldCourse114}/>}
 ```
 
 `slug` is the kebab-case module title, placed under `app/course/gold/` (parallel to `app/course/silver/`).

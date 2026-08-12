@@ -4,4 +4,4 @@ import{verifySession}from"../../../lib/session";
 import{PasswordGate}from"../../../components/PasswordGate";
 import{CreditMissionCourse}from"../../../components/CreditMissionCourse";
 export const dynamic="force-dynamic";
-export default async function CoursePage(){const jar=await cookies();const unlocked=await verifySession(jar.get("cp_course_access")?.value,"course1");return unlocked?<CreditMissionCourse course={course110}/>:<PasswordGate course={course110}/>}
+export default async function CoursePage(){const jar=await cookies();const unlocked=await verifySession(jar.get("cp_course_access")?.value,course110.id);return unlocked?<CreditMissionCourse course={course110}/>:<PasswordGate course={course110}/>}
