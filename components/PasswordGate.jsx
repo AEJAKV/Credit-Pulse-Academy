@@ -4,6 +4,37 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Brand } from "./Brand";
 
+const creditFoundationCourseNumbers = {
+  "course-1": "1.1",
+  "course-1-2": "1.2",
+  "course-1-3": "1.3",
+  "course-1-4": "1.4",
+  "course-1-5": "1.5",
+  "course-1-6": "1.6",
+  "course-1-7": "1.7",
+  "course-1-8": "1.8",
+  "course-1-9": "1.9",
+  "course-1-10": "1.10",
+};
+
+const moneyFoundationCourseNumbers = {
+  "course-2-1": "2.1",
+  "course-2-2": "2.2",
+  "course-2-3": "2.3",
+  "course-2-4": "2.4",
+  "course-2-5": "2.5",
+  "course-2-6": "2.6",
+  "course-2-7": "2.7",
+  "course-2-8": "2.8",
+  "course-2-9": "2.9",
+  "course-2-10": "2.10",
+  "course-2-11": "2.11",
+  "course-2-12": "2.12",
+  "course-2-13": "2.13",
+  "course-2-14": "2.14",
+  "course-2-15": "2.15",
+};
+
 function ArrowIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -26,6 +57,14 @@ export function PasswordGate({ course }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const router = useRouter();
+  const creditFoundationCourseNumber = creditFoundationCourseNumbers[course.id];
+  const moneyFoundationCourseNumber = moneyFoundationCourseNumbers[course.id];
+  const courseNumber = creditFoundationCourseNumber ?? moneyFoundationCourseNumber;
+  const courseCollection = creditFoundationCourseNumber
+    ? "CREDIT FOUNDATIONS"
+    : moneyFoundationCourseNumber
+      ? "MONEY FOUNDATIONS"
+      : "YOUR COURSE";
 
   async function submit(event) {
     event.preventDefault();
@@ -63,9 +102,12 @@ export function PasswordGate({ course }) {
           <p className="gate-lead">Focused, practical learning designed to help you understand your credit—and feel confident about what comes next.</p>
 
           <article className="gate-preview">
-            <div className="course-number"><small>COURSE</small><strong>01</strong></div>
+            <div className="course-number">
+              <small>COURSE</small>
+              <strong>{courseNumber ?? "01"}</strong>
+            </div>
             <div className="course-summary">
-              <small>YOUR COURSE</small>
+              <small>{courseCollection}</small>
               <strong>{course.title}</strong>
               <div className="course-meta">
                 <span><i className="meta-play">▶</i>One continuous course</span>
