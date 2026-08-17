@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
-  ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, Clock3,
-  FileCheck2, FileSearch, Fingerprint, HelpCircle, Landmark, Lightbulb,
+  ArrowRight, BookOpen, CalendarDays, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, Clock3,
+  CreditCard, FileCheck2, FileSearch, Fingerprint, Flag, Gauge, HelpCircle, History, Landmark, Lightbulb,
   ListChecks, LockKeyhole, Menu, SearchCheck, ShieldAlert, ShieldCheck, X,
 } from "lucide-react";
 import { Brand } from "./Brand";
@@ -22,13 +23,13 @@ const reportStops = [
 ];
 
 const accountFields = [
-  ["Creditor or lender name.", "Who is reporting the account? The legal company name may differ from the brand you remember."],
-  ["Account type.", "Is it a credit card, line of credit, instalment loan, mortgage or another reported credit account?"],
-  ["Date opened.", "Does the timing make sense for an account that belongs to you?"],
-  ["Reported balance.", "How much was shown as owing when the lender’s information was captured?"],
-  ["Credit limit or original amount.", "For revolving credit, look for the limit; for a loan, the report may show the original amount or other loan details."],
-  ["Payment history.", "Does the account show payments as agreed or report late/missed payments?"],
-  ["Account status.", "Is it shown as open, closed, paid, transferred, in collection or another status?"],
+  ["Creditor or lender name.", "Who is reporting the account? The legal company name may differ from the brand you remember.", Landmark],
+  ["Account type.", "Is it a credit card, line of credit, instalment loan, mortgage or another reported credit account?", CreditCard],
+  ["Date opened.", "Does the timing make sense for an account that belongs to you?", CalendarDays],
+  ["Reported balance.", "How much was shown as owing when the lender’s information was captured?", CircleDollarSign],
+  ["Credit limit or original amount.", "For revolving credit, look for the limit; for a loan, the report may show the original amount or other loan details.", Gauge],
+  ["Payment history.", "Does the account show payments as agreed or report late/missed payments?", History],
+  ["Account status.", "Is it shown as open, closed, paid, transferred, in collection or another status?", Flag],
 ];
 
 const quickChecks = [
@@ -53,6 +54,53 @@ function Heading({ number, kicker, title }) {
 
 function Myth({ children, reality }) {
   return <article><span>MYTH</span><p>“{children}”</p><div><CheckCircle2 />{reality}</div></article>;
+}
+
+const accountCarouselSlides = [
+  { src: "/images/course-1-3/ca-1.webp", alt: "Reviewing a credit account line by line to confirm the creditor, balance and status." },
+  { src: "/images/course-1-3/ca-2.webp", alt: "Translating an account's details into a plain-English summary." },
+];
+
+function AccountImageCarousel() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const interval = window.setInterval(() => setActiveSlide((current) => (current + 1) % accountCarouselSlides.length), 4000);
+    return () => window.clearInterval(interval);
+  }, [paused]);
+
+  function showSlide(index) {
+    setActiveSlide((index + accountCarouselSlides.length) % accountCarouselSlides.length);
+  }
+
+  return <section
+    className="course-image-carousel report-image-carousel"
+    aria-label="Course image carousel"
+    aria-roledescription="carousel"
+    onMouseEnter={() => setPaused(true)}
+    onMouseLeave={() => setPaused(false)}
+    onFocusCapture={() => setPaused(true)}
+    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+  >
+    <div className="carousel-viewport">
+      <div className="carousel-track" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
+        {accountCarouselSlides.map((slide, index) => <div className="carousel-slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${accountCarouselSlides.length}`} aria-hidden={activeSlide !== index} key={slide.src}>
+          <Image
+            src={slide.src}
+            alt={slide.alt}
+            fill
+            sizes="(max-width: 1050px) min(560px, 100vw), 560px"
+          />
+        </div>)}
+      </div>
+    </div>
+    <button className="carousel-arrow previous" type="button" onClick={() => showSlide(activeSlide - 1)} aria-label="Previous image"><ChevronLeft /></button>
+    <button className="carousel-arrow next" type="button" onClick={() => showSlide(activeSlide + 1)} aria-label="Next image"><ChevronRight /></button>
+    <div className="carousel-dots" aria-label="Choose an image">{accountCarouselSlides.map((slide, index) => <button key={slide.src} type="button" className={activeSlide === index ? "active" : ""} onClick={() => showSlide(index)} aria-label={`Show image ${index + 1}`} aria-current={activeSlide === index ? "true" : undefined} />)}</div>
+    <span className="carousel-status" aria-live="polite">Image {activeSlide + 1} of {accountCarouselSlides.length}</span>
+  </section>;
 }
 
 export function CreditReportCourse({ course }) {
@@ -115,7 +163,7 @@ export function CreditReportCourse({ course }) {
     {menuOpen && <button className="reader-scrim" aria-label="Close course contents" onClick={() => setMenuOpen(false)} />}
 
     <main className="reader-main">
-      <section className="reader-hero report-hero" id="start"><div className="reader-hero-copy"><p className="reader-kicker">{course.eyebrow}</p><h1>{course.title}</h1><p className="reader-subtitle">{course.subtitle}</p><p className="reader-deck">This lesson is a guided walkthrough. You will move through the report in five stops: identity, credit accounts, codes and labels, inquiries, and serious items.</p><div className="reader-meta"><span><Clock3 />{course.duration}</span><span><FileCheck2 />One course check-in</span></div><button className="reader-primary" onClick={() => goToSection("identity")}>Start the walkthrough <ArrowRight /></button></div><div className="report-hero-visual" aria-hidden="true"><div className="report-sheet"><div><span>CANADIAN CREDIT REPORT</span><strong>FILE REVIEW</strong></div><i /><i /><i /><section><b>IDENTITY</b><b>ACCOUNTS</b><b>INQUIRIES</b></section><ShieldCheck /></div></div></section>
+      <section className="reader-hero report-hero" id="start"><div className="reader-hero-media report-hero-media" aria-hidden="true"><Image src="/images/course-1-3/course-3-bg.webp" alt="" fill priority sizes="(max-width: 1050px) 100vw, calc(100vw - 272px)" /></div><div className="reader-hero-copy"><p className="reader-kicker">{course.eyebrow}</p><h1>{course.title}</h1><p className="reader-subtitle">{course.subtitle}</p><p className="reader-deck">This lesson is a guided walkthrough. You will move through the report in five stops: identity, credit accounts, codes and labels, inquiries, and serious items.</p><div className="reader-meta"><span><Clock3 />{course.duration}</span><span><FileCheck2 />One course check-in</span></div><button className="reader-primary" onClick={() => goToSection("identity")}>Start the walkthrough <ArrowRight /></button></div><div className="report-hero-visual" aria-hidden="true"><div className="report-sheet"><div><span>CANADIAN CREDIT REPORT</span><strong>FILE REVIEW</strong></div><i /><i /><i /><section><b>IDENTITY</b><b>ACCOUNTS</b><b>INQUIRIES</b></section><ShieldCheck /></div></div></section>
 
       <div className="reader-body">
         <section className="reader-section reader-intro">
@@ -140,9 +188,14 @@ export function CreditReportCourse({ course }) {
           <Heading number="02" kicker="WALKTHROUGH STOP 2" title="Review Every Credit Account" />
           <p className="reader-lead">Now move to the accounts. Credit accounts may also be called tradelines. Read one account from top to bottom before moving to the next. Trying to compare six accounts at once is how perfectly reasonable people end up arguing with a PDF.</p>
           <p>For each account, find these seven fields when they are available:</p>
-          <ol className="priority-list account-field-list">{accountFields.map(([title, copy], index) => <li key={title}><span>{index + 1}</span><div><h3>{title}</h3><p>{copy}</p></div></li>)}</ol>
+          <div className="account-field-grid">{accountFields.map(([title, copy, Icon], index) => <article key={title}><span>{index + 1}</span><Icon aria-hidden="true" /><h3>{title}</h3><p>{copy}</p></article>)}</div>
           <div className="reader-links"><SourceLink href="https://www.canada.ca/en/financial-consumer-agency/services/credit-reports-score/credit-report-score-basics.html">FCAC: Credit report and score basics</SourceLink><SourceLink href="https://www.equifax.ca/personal/education/credit-report/articles/-/learn/what-information-is-in-a-credit-report/">Equifax Canada: What information is in a credit report?</SourceLink></div>
-          <Spotlight>Before deciding a balance is wrong, check its reporting date. Your online banking balance may be today’s number while the credit report is showing an earlier snapshot.</Spotlight>
+          <div className="reader-context-media report-context-media">
+            <div className="reader-context-copy">
+              <Spotlight>Before deciding a balance is wrong, check its reporting date. Your online banking balance may be today’s number while the credit report is showing an earlier snapshot.</Spotlight>
+            </div>
+            <AccountImageCarousel />
+          </div>
           <h2 className="bureau-inline-heading">A 30-Second Account Translation</h2>
           <p>Suppose a fictional report entry shows: Maple Card Services; opened March 2022; balance $620; limit $3,000; updated last month; status current.</p>
           <div className="translation-card"><span>PAUSE &amp; TRANSLATE</span><p>Say it in one sentence: “This is my credit card. It was opened in 2022. The report shows a $620 balance on a $3,000 limit, the information was updated last month, and the account is shown as current.”</p></div>
@@ -157,7 +210,7 @@ export function CreditReportCourse({ course }) {
           <h2 className="bureau-inline-heading">Quick Myth Check</h2>
           <div className="myth-list"><Myth reality="The report contains credit-file information. The score is a separate numerical estimate calculated from credit-report information.">My credit report and credit score are basically the same document.</Myth><Myth reality="A previous address you actually used can be normal history. An address you never used is something to verify, especially if other unfamiliar information appears with it.">An old address on my report automatically means identity theft.</Myth><Myth reality="Consumer disclosures can include application-related inquiries as well as account-review, non-credit-related and your own inquiries. These do not all affect a score the same way.">Every inquiry listed on my consumer report is a hard credit application.</Myth></div>
           <div className="reader-links"><SourceLink href="https://www.transunion.ca/product/consumer-disclosure">TransUnion Canada: Consumer Disclosure</SourceLink></div>
-          <div className="story-card report-story"><div className="story-content"><p className="reader-kicker">NADIA’S VERY LOUD CREDIT REPORT</p><h3>Nadia opens her report.</h3><p>She immediately finds an employer she left years ago, a lender name she does not recognize, a card balance higher than the one in her banking app, and an inquiry section that looks like it invited friends.</p><p>For about thirty seconds, every line feels equally urgent. Then she uses the five-stop walkthrough. The old employer is historical information. The unfamiliar lender name turns out to be the financing company behind a store card she recognizes. The balance was reported before a recent payment. Several inquiry entries are not new credit applications.</p><p>One application-related inquiry, however, still does not make sense to her. That item gets a red label and prompt follow-up. Nadia did not ‘ignore’ the weird stuff. She separated explainable weird from important weird—which is a surprisingly useful adult skill.</p></div></div>
+          <div className="story-card report-story"><div className="story-media" aria-hidden="true"><Image src="/images/course-1-3/nadia.webp" alt="" fill sizes="(max-width: 760px) 100vw, 860px" loading="eager" /></div><div className="story-content"><p className="reader-kicker">NADIA’S VERY LOUD CREDIT REPORT</p><h3>Nadia opens her report.</h3><p>She immediately finds an employer she left years ago, a lender name she does not recognize, a card balance higher than the one in her banking app, and an inquiry section that looks like it invited friends.</p><p>For about thirty seconds, every line feels equally urgent. Then she uses the five-stop walkthrough. The old employer is historical information. The unfamiliar lender name turns out to be the financing company behind a store card she recognizes. The balance was reported before a recent payment. Several inquiry entries are not new credit applications.</p><p>One application-related inquiry, however, still does not make sense to her. That item gets a red label and prompt follow-up. Nadia did not ‘ignore’ the weird stuff. She separated explainable weird from important weird—which is a surprisingly useful adult skill.</p></div></div>
         </section>
 
         <section className="reader-section" id="inquiries">
@@ -188,7 +241,7 @@ export function CreditReportCourse({ course }) {
 
         <section className="reader-section" id="action">
           <Heading number="07" title="Your Action (Fill Out Form): Guided Report Walkthrough" />
-          <div className="checkin-intro"><p className="reader-lead">Use a real report if you are comfortable doing so, but do not write full account numbers, SIN numbers or other sensitive identifiers in course notes.</p><p>Write your answer before checking the guide.</p></div>
+          <div className="checkin-intro"><div className="activity-reward-pill"><CircleDollarSign aria-hidden="true" /><span>Complete this activity and get <strong>$5</strong> plus <strong>20 Credit Pulse points</strong></span></div><p className="reader-lead">Use a real report if you are comfortable doing so, but do not write full account numbers, SIN numbers or other sensitive identifiers in course notes.</p><p>Write your answer before checking the guide.</p></div>
           {complete ? <div className="reader-completion"><span><Check /></span><p className="reader-kicker">COURSE 1.3 COMPLETE</p><h3>Nicely done{learner.name ? `, ${learner.name.split(" ")[0]}` : ""}.</h3><p>Your check-in is saved on this device. You can review any section above or print this page for reference.</p><button className="reader-primary" onClick={() => window.print()}>Print course notes <FileCheck2 /></button></div> : <div className="calculator-frame checkin-form-frame"><form className="checkin-form" onSubmit={submitActivity}>
             <div className="checkin-identity"><label>Full name<input name="name" defaultValue={learner.name} required autoComplete="name" /></label><label>Email address<input name="email" type="email" defaultValue={learner.email} required autoComplete="email" /></label></div>
             <label><span><b>11</b>IDENTITY CHECK — Name one personal-information field you confirmed. Did it make sense?</span><textarea name="identity" rows="3" required /></label>
