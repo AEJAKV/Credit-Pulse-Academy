@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   ArrowRight, BookOpen, CalendarDays, Check, CheckCircle2, ChevronDown,
-  Clock3, FileCheck2, Files, Landmark, Lightbulb, LockKeyhole, Menu,
-  SearchCheck, ShieldAlert, ShieldCheck, X,
+  ChevronLeft, ChevronRight, Calculator, CircleDollarSign, Clock3, FileCheck2, FileText,
+  Files, Landmark, Lightbulb, LockKeyhole, Menu, SearchCheck,
+  ShieldAlert, ShieldCheck, X,
 } from "lucide-react";
 import { Brand } from "./Brand";
 import { course12Glossary, course12Sections } from "../lib/course-12-data";
@@ -41,6 +43,129 @@ function Heading({ number, title }) {
   return <div className="reader-section-heading"><span>{number}</span><div><h2>{title}</h2></div></div>;
 }
 
+function BureauImageCarousel() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const slides = [
+    {
+      src: "/images/course-1-2/f-c.webp",
+      alt: "A couple reviewing credit paperwork together, with the message: Your first job is not to choose a winner.",
+    },
+    {
+      src: "/images/course-1-2/s-c.webp",
+      alt: "A woman comparing two credit reports, with the message: Two credit files. One you. No need for a paperwork duel.",
+    },
+  ];
+
+  useEffect(() => {
+    if (paused) return;
+    const interval = window.setInterval(() => setActiveSlide((current) => (current + 1) % slides.length), 4000);
+    return () => window.clearInterval(interval);
+  }, [paused, slides.length]);
+
+  function showSlide(index) {
+    setActiveSlide((index + slides.length) % slides.length);
+  }
+
+  return <section
+    className="course-image-carousel bureau-image-carousel"
+    aria-label="Course image carousel"
+    aria-roledescription="carousel"
+    onMouseEnter={() => setPaused(true)}
+    onMouseLeave={() => setPaused(false)}
+    onFocusCapture={() => setPaused(true)}
+    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+  >
+    <div className="carousel-viewport">
+      <div className="carousel-track" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
+        {slides.map((slide, index) => <div className="carousel-slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${slides.length}`} aria-hidden={activeSlide !== index} key={slide.src}>
+          <Image
+            src={slide.src}
+            alt={slide.alt}
+            fill
+            sizes="(max-width: 1050px) min(560px, 100vw), 560px"
+          />
+        </div>)}
+      </div>
+    </div>
+    <button className="carousel-arrow previous" type="button" onClick={() => showSlide(activeSlide - 1)} aria-label="Previous image"><ChevronLeft /></button>
+    <button className="carousel-arrow next" type="button" onClick={() => showSlide(activeSlide + 1)} aria-label="Next image"><ChevronRight /></button>
+    <div className="carousel-dots" aria-label="Choose an image">{slides.map((slide, index) => <button key={slide.src} type="button" className={activeSlide === index ? "active" : ""} onClick={() => showSlide(index)} aria-label={`Show image ${index + 1}`} aria-current={activeSlide === index ? "true" : undefined} />)}</div>
+    <span className="carousel-status" aria-live="polite">Image {activeSlide + 1} of {slides.length}</span>
+  </section>;
+}
+
+function BureauReasonsCarousel() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [paused, setPaused] = useState(false);
+  const maxSlide = Math.max(0, reasons.length - visibleCount);
+  const displayedSlide = Math.min(activeSlide, maxSlide);
+
+  useEffect(() => {
+    const updateVisibleCount = () => {
+      const width = window.innerWidth;
+      setVisibleCount(width >= 1100 ? 3 : width >= 700 ? 2 : 1);
+    };
+    updateVisibleCount();
+    window.addEventListener("resize", updateVisibleCount, { passive: true });
+    return () => window.removeEventListener("resize", updateVisibleCount);
+  }, []);
+
+  useEffect(() => {
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const interval = window.setInterval(() => setActiveSlide((current) => current >= maxSlide ? 0 : current + 1), 3500);
+    return () => window.clearInterval(interval);
+  }, [maxSlide, paused]);
+
+  const slidePercent = (displayedSlide * 100) / visibleCount;
+  const slideGap = (displayedSlide * 16) / visibleCount;
+
+  return <section
+    className="bureau-reasons-carousel"
+    data-visible={visibleCount}
+    aria-label="Reasons credit bureau information may differ"
+    aria-roledescription="carousel"
+    onMouseEnter={() => setPaused(true)}
+    onMouseLeave={() => setPaused(false)}
+    onFocusCapture={() => setPaused(true)}
+    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+  >
+    <div className="bureau-reasons-viewport">
+      <div className="bureau-reasons-track" style={{ transform: `translateX(calc(-${slidePercent}% - ${slideGap}px))` }}>
+        {reasons.map(([title, copy, Icon], index) => <article key={title} aria-label={`${index + 1} of ${reasons.length}`}>
+          <div className="bureau-reason-image" aria-hidden="true">
+            <div className="bureau-reason-image-inner">
+              <Image
+                src={`/images/course-1-2/caro-${index + 1}.webp`}
+                alt=""
+                fill
+                sizes="(max-width: 699px) calc(100vw - 64px), (max-width: 1099px) calc(50vw - 36px), 276px"
+              />
+            </div>
+          </div>
+          <div className="bureau-reason-badge" aria-hidden="true"><Icon /></div>
+          <div className="bureau-reason-copy">
+            <span>WHY IT DIFFERS · {String(index + 1).padStart(2, "0")}</span>
+            <h3>{title}</h3>
+            <p>{copy}</p>
+          </div>
+        </article>)}
+      </div>
+    </div>
+    <div className="bureau-reasons-controls">
+      <div className="bureau-reasons-dots" aria-label="Choose a group of reasons">
+        {Array.from({ length: maxSlide + 1 }, (_, index) => <button key={index} type="button" className={displayedSlide === index ? "active" : ""} onClick={() => setActiveSlide(index)} aria-label={`Show reason group ${index + 1}`} aria-current={displayedSlide === index ? "true" : undefined} />)}
+      </div>
+      <div>
+        <button type="button" onClick={() => setActiveSlide((current) => current <= 0 ? maxSlide : current - 1)} aria-label="Previous reasons"><ChevronLeft /></button>
+        <button type="button" onClick={() => setActiveSlide((current) => current >= maxSlide ? 0 : current + 1)} aria-label="Next reasons"><ChevronRight /></button>
+      </div>
+    </div>
+    <span className="carousel-status" aria-live="polite">Showing reason {displayedSlide + 1} through {Math.min(displayedSlide + visibleCount, reasons.length)} of {reasons.length}</span>
+  </section>;
+}
+
 function Myth({ children, reality }) {
   return <article><span>MYTH</span><p>“{children}”</p><div><CheckCircle2 />{reality}</div></article>;
 }
@@ -51,6 +176,7 @@ export function BureauComparisonCourse({ course }) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [learner, setLearner] = useState({ name: "", email: "" });
   const [complete, setComplete] = useState(false);
+  const [poppedDefinition, setPoppedDefinition] = useState(null);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -76,6 +202,17 @@ export function BureauComparisonCourse({ course }) {
   function goToSection(id) {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
+  }
+
+  function toggleDefinition(card) {
+    setPoppedDefinition((current) => current === card ? null : card);
+  }
+
+  function handleDefinitionKey(event, card) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      toggleDefinition(card);
+    }
   }
 
   function submitActivity(event) {
@@ -116,6 +253,15 @@ export function BureauComparisonCourse({ course }) {
 
     <main className="reader-main">
       <section className="reader-hero bureau-hero" id="start">
+        <div className="reader-hero-media bureau-hero-media" aria-hidden="true">
+          <Image
+            src="/images/course-1-2/hero-bg.webp"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 1050px) 100vw, calc(100vw - 272px)"
+          />
+        </div>
         <div className="reader-hero-copy">
           <p className="reader-kicker">{course.eyebrow}</p>
           <h1>{course.title}</h1>
@@ -124,7 +270,29 @@ export function BureauComparisonCourse({ course }) {
           <div className="reader-meta"><span><Clock3 />{course.duration}</span><span><FileCheck2 />One course check-in</span></div>
           <button className="reader-primary" onClick={() => goToSection("differences")}>Start comparing <ArrowRight /></button>
         </div>
-        <div className="bureau-hero-visual" aria-hidden="true"><div className="bureau-file equifax-file"><span>E</span><strong>Equifax</strong><i /><i /><i /></div><div className="bureau-file transunion-file"><span>TU</span><strong>TransUnion</strong><i /><i /><i /></div><div className="bureau-you"><Check />ONE YOU</div></div>
+        <div className="bureau-hero-visual" aria-hidden="true">
+          <article className="bureau-file equifax-file">
+            <header><div><small>BUREAU 01</small><strong>Equifax</strong></div><span>CANADA</span></header>
+            <p>CONSUMER CREDIT FILE</p>
+            <dl>
+              <div><dt>Account profile</dt></div>
+              <div><dt>Balance snapshot</dt></div>
+              <div><dt>Payment status</dt></div>
+            </dl>
+            <footer><span>INDEPENDENT FILE</span><i /></footer>
+          </article>
+          <article className="bureau-file transunion-file">
+            <header><div><small>BUREAU 02</small><strong>TransUnion</strong></div><span>CANADA</span></header>
+            <p>CONSUMER CREDIT FILE</p>
+            <dl>
+              <div><dt>Accounts</dt><dd>Reported record</dd></div>
+              <div><dt>Balances</dt><dd>Dated snapshot</dd></div>
+              <div><dt>Status</dt><dd>Maintained separately</dd></div>
+            </dl>
+            <footer><span>INDEPENDENT FILE</span><i /></footer>
+          </article>
+          <div className="bureau-you"><span>ONE CONSUMER</span><i /><strong>TWO DISTINCT FILES</strong></div>
+        </div>
       </section>
 
       <div className="reader-body">
@@ -133,10 +301,42 @@ export function BureauComparisonCourse({ course }) {
           <p>In real life, the two reports can look different and still both make sense. Canada’s two main consumer credit bureaus—Equifax and TransUnion—maintain separate credit files. Lenders may report to one bureau, both bureaus, or update them at different times.</p>
           <p>That means a mismatch is not automatically a mistake. Your first job is not to choose a winner. Your job is to ask: What is different, why is it different, and does it need action?</p>
           <div className="reader-links"><SourceLink href="https://www.canada.ca/en/financial-consumer-agency/services/credit-reports-score/order-credit-report.html">FCAC: Getting your credit report and score</SourceLink></div>
-          <Spotlight>You do not have one master Canadian credit file. Equifax and TransUnion keep separate files, so one report can contain information the other does not.</Spotlight>
+          <div className="reader-context-media bureau-context-media">
+            <div className="reader-context-copy">
+              <Spotlight>You do not have one master Canadian credit file. Equifax and TransUnion keep separate files, so one report can contain information the other does not.</Spotlight>
+            </div>
+            <BureauImageCarousel />
+          </div>
           <h2 className="bureau-inline-heading">Meet the Two Files</h2>
           <p>A credit report is the record. A credit score is a number calculated from credit-report information. So two different scores do not prove that one bureau has made an error.</p>
-          <div className="bureau-definition-grid"><article><span>THE RECORD</span><h3>Credit report</h3><p>A credit report is the record.</p></article><article><span>THE NUMBER</span><h3>Credit score</h3><p>A credit score is a number calculated from credit-report information.</p></article></div>
+          <div className="bureau-definition-grid">
+            <article
+              className={`report-definition-card ${poppedDefinition === "report" ? "is-popped" : ""}`}
+              role="button"
+              tabIndex={0}
+              aria-pressed={poppedDefinition === "report"}
+              onClick={() => toggleDefinition("report")}
+              onKeyDown={(event) => handleDefinitionKey(event, "report")}
+            >
+              <div className="bureau-definition-card-head"><span>THE RECORD</span><small aria-hidden="true">01</small></div>
+              <div className="bureau-definition-icon" aria-hidden="true"><FileText /></div>
+              <h3>Credit report</h3>
+              <p>A credit report is the record.</p>
+            </article>
+            <article
+              className={`score-definition-card ${poppedDefinition === "score" ? "is-popped" : ""}`}
+              role="button"
+              tabIndex={0}
+              aria-pressed={poppedDefinition === "score"}
+              onClick={() => toggleDefinition("score")}
+              onKeyDown={(event) => handleDefinitionKey(event, "score")}
+            >
+              <div className="bureau-definition-card-head"><span>THE NUMBER</span><small aria-hidden="true">02</small></div>
+              <div className="bureau-definition-icon" aria-hidden="true"><Calculator /></div>
+              <h3>Credit score</h3>
+              <p>A credit score is a number calculated from credit-report information.</p>
+            </article>
+          </div>
           <p>Think of the reports as two camera photos of the same busy street taken at different moments. The street is real. The cars can change between pictures. The useful skill is checking the timestamp before declaring a traffic mystery.</p>
           <div className="reader-links"><SourceLink href="https://www.transunion.ca/credit-report">TransUnion Canada: What is a credit report?</SourceLink></div>
         </section>
@@ -144,7 +344,7 @@ export function BureauComparisonCourse({ course }) {
         <section className="reader-section" id="differences">
           <Heading number="01" title="Why the information may differ" />
           <p className="reader-lead">Most differences become easier to understand once you compare the underlying account rather than the page layout.</p>
-          <div className="factor-grid bureau-reason-grid">{reasons.map(([title, copy, Icon], index) => <article key={title}><div><Icon aria-hidden="true" /><span>0{index + 1}</span></div><h3>{title}</h3><p>{copy}</p></article>)}</div>
+          <BureauReasonsCarousel />
           <div className="reader-links"><SourceLink href="https://www.transunion.ca/credit-report">TransUnion Canada: What is a credit report?</SourceLink></div>
           <Spotlight>A reported balance is a snapshot tied to a reporting date. If you paid yesterday but the bureau file was updated earlier, the report has not failed a math test—it may simply be showing the earlier snapshot.</Spotlight>
           <h2 className="bureau-inline-heading">Quick Myth Check</h2>
@@ -158,7 +358,7 @@ export function BureauComparisonCourse({ course }) {
 
         <section className="reader-section" id="mystery">
           <Heading number="02" title="The $920 mystery" />
-          <div className="story-card bureau-story"><div className="story-content"><p className="reader-kicker">A TIMING DIFFERENCE OR SOMETHING MORE?</p><h3>Here’s Jamie.</h3><p>He opens both credit reports before breakfast, which is an ambitious way to introduce paperwork to a perfectly innocent morning.</p><p>His Equifax report shows a card balance of $920. His TransUnion report shows $1,840. Jamie’s first thought is that one bureau misplaced a calculator.</p><div className="jamie-timeline"><span><b>JUN 18</b>TransUnion account snapshot: $1,840</span><i /><span><b>JUN 22</b>Jamie made a $920 payment</span><i /><span><b>JUL 03</b>Equifax account snapshot: $920</span></div><p>Then he checks the dates. TransUnion’s account snapshot was updated June 18. Jamie made a $920 payment on June 22. Equifax shows an update dated July 3. The balances now tell a sensible story: one report captured the account before the payment; the other captured it after.</p><p>But Jamie also notices a credit-card account on one report that he does not recognize. That is different. Reporting timing can explain a balance snapshot. It does not explain ownership of an unfamiliar account. Jamie labels the balance mismatch “explained” and the unfamiliar account “verify promptly.” Same comparison, different priority.</p></div></div>
+          <div className="story-card bureau-story"><div className="story-media" aria-hidden="true"><Image src="/images/course-1-2/jamie.webp" alt="" fill sizes="(max-width: 760px) calc(100vw - 36px), 900px" /></div><div className="story-content"><p className="reader-kicker">A TIMING DIFFERENCE OR SOMETHING MORE?</p><h3>Here’s Jamie.</h3><p>He opens both credit reports before breakfast, which is an ambitious way to introduce paperwork to a perfectly innocent morning.</p><p>His Equifax report shows a card balance of $920. His TransUnion report shows $1,840. Jamie’s first thought is that one bureau misplaced a calculator.</p><div className="jamie-timeline"><span><b>JUN 18</b>TransUnion account snapshot: $1,840</span><i /><span><b>JUN 22</b>Jamie made a $920 payment</span><i /><span><b>JUL 03</b>Equifax account snapshot: $920</span></div><p>Then he checks the dates. TransUnion’s account snapshot was updated June 18. Jamie made a $920 payment on June 22. Equifax shows an update dated July 3. The balances now tell a sensible story: one report captured the account before the payment; the other captured it after.</p><p>But Jamie also notices a credit-card account on one report that he does not recognize. That is different. Reporting timing can explain a balance snapshot. It does not explain ownership of an unfamiliar account. Jamie labels the balance mismatch “explained” and the unfamiliar account “verify promptly.” Same comparison, different priority.</p></div></div>
         </section>
 
         <section className="reader-section" id="investigation">
@@ -196,14 +396,38 @@ export function BureauComparisonCourse({ course }) {
           <div className="quick-checks">{scenarios.map(([prompt, answer, reason], index) => <details key={prompt}><summary><span>{index + 6}</span><strong>{prompt}</strong><ChevronDown /></summary><div><b>{answer}</b><p>{reason}</p></div></details>)}</div>
           <h2 className="bureau-inline-heading">Your Action</h2>
           <p>Choose one active account you recognize. Do a two-file comparison using the most recent Equifax and TransUnion reports you can access. Do not try to solve your entire credit history in one sitting; paperwork also benefits from portion control.</p>
-          <div className="action-preview"><p><b>11.</b> One account to compare: <span /></p><p><b>12.</b> The biggest difference I notice: <span /></p><p><b>13.</b> My next-step label: <strong>□ Match&nbsp;&nbsp; □ Explained Difference&nbsp;&nbsp; □ Needs Verification&nbsp;&nbsp; □ Dispute Promptly</strong></p></div>
+          <div className="calculator-frame action-preview-frame"><div className="action-preview">
+            <div className="action-preview-head"><div><span>TWO-FILE WORKSHEET</span><strong>Make the comparison concrete</strong></div><small>OPTIONAL PRACTICE</small></div>
+            <label className="action-write-row">
+              <b>11</b>
+              <span>One account to compare<input type="text" aria-label="One account to compare" placeholder="Enter an account name" /></span>
+            </label>
+            <label className="action-write-row">
+              <b>12</b>
+              <span>The biggest difference I notice<input type="text" aria-label="The biggest difference I notice" placeholder="Describe the difference" /></span>
+            </label>
+            <fieldset className="action-label-fieldset">
+              <legend><b>13</b><span>My next-step label</span></legend>
+              <div className="action-label-options">
+                {["Match", "Explained Difference", "Needs Verification", "Dispute Promptly"].map((label) => <label key={label}>
+                  <input type="radio" name="comparison-next-step" value={label} />
+                  <span className="action-check" aria-hidden="true"><Check /></span>
+                  <span>{label}</span>
+                </label>)}
+              </div>
+            </fieldset>
+          </div></div>
           <div className="takeaway"><ShieldCheck /><div><p>KEY TAKEAWAY</p><h3>Neither bureau is automatically the ‘correct’ one because its report looks cleaner.</h3><span>Compare account ownership, dates and core facts first. A mismatch is not a conclusion; it is a question with paperwork attached.</span></div></div>
           <Spotlight>If information is genuinely wrong, you can dispute it. FCAC says credit bureaus must correct errors for free. If the problem appears in both files, check both bureau records rather than assuming one correction will automatically solve everything.</Spotlight>
         </section>
 
         <section className="reader-section" id="action">
           <Heading number="06" title="Your Action (Fill Out Form): Two-File Investigation" />
-          <div className="checkin-intro"><p className="reader-lead">Write your answer in your own words before checking the guide.</p><p>Use a real account for Questions 11–13 only if you are comfortable doing so; do not enter full account numbers in course notes.</p></div>
+          <div className="checkin-intro">
+            <div className="activity-reward-pill"><CircleDollarSign aria-hidden="true" /><span>Complete this activity and get <strong>$5</strong> plus <strong>20 Credit Pulse points</strong></span></div>
+            <p className="reader-lead">Write your answer in your own words before checking the guide.</p>
+            <p>Use a real account for Questions 11–13 only if you are comfortable doing so; do not enter full account numbers in course notes.</p>
+          </div>
           {complete ? <div className="reader-completion"><span><Check /></span><p className="reader-kicker">COURSE 1.2 COMPLETE</p><h3>Nicely done{learner.name ? `, ${learner.name.split(" ")[0]}` : ""}.</h3><p>Your check-in is saved on this device. You can review any section above or print this page for reference.</p><button className="reader-primary" onClick={() => window.print()}>Print course notes <FileCheck2 /></button></div> : <div className="calculator-frame checkin-form-frame"><form className="checkin-form" onSubmit={submitActivity}>
             <div className="checkin-identity"><label>Full name<input name="name" defaultValue={learner.name} required autoComplete="name" /></label><label>Email address<input name="email" type="email" defaultValue={learner.email} required autoComplete="email" /></label></div>
             <label><span><b>11</b>What balance and reporting date appear on Equifax?</span><textarea name="equifax" rows="3" required /></label>
