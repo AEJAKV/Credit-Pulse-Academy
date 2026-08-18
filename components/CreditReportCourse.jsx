@@ -142,10 +142,9 @@ export function CreditReportCourse({ course }) {
     const nextLearner = { name: data.name, email: data.email };
     const response = [
       `11. Identity check: ${data.identity}`,
-      `12. Account snapshot: ${data.snapshot}`,
-      `13. Plain-English translation: ${data.translation}`,
-      `14. Inquiry scan: ${data.inquiry}`,
-      `15. Triage: ${data.triage}`,
+      `12. Plain-English translation: ${data.translation}`,
+      `13. Inquiry scan: ${data.inquiry}`,
+      `14. Triage: ${data.triage}`,
     ].join("\n");
     const rows = JSON.parse(localStorage.getItem(submissionKey) || "[]");
     rows.unshift({ ...nextLearner, lesson: 3, lessonTitle: "Guided Report Walkthrough", response, submittedAt: new Date().toISOString() });
@@ -245,10 +244,9 @@ export function CreditReportCourse({ course }) {
           {complete ? <div className="reader-completion"><span><Check /></span><p className="reader-kicker">COURSE 1.3 COMPLETE</p><h3>Nicely done{learner.name ? `, ${learner.name.split(" ")[0]}` : ""}.</h3><p>Your check-in is saved on this device. You can review any section above or print this page for reference.</p><button className="reader-primary" onClick={() => window.print()}>Print course notes <FileCheck2 /></button></div> : <div className="calculator-frame checkin-form-frame"><form className="checkin-form" onSubmit={submitActivity}>
             <div className="checkin-identity"><label>Full name<input name="name" defaultValue={learner.name} required autoComplete="name" /></label><label>Email address<input name="email" type="email" defaultValue={learner.email} required autoComplete="email" /></label></div>
             <label><span><b>11</b>IDENTITY CHECK — Name one personal-information field you confirmed. Did it make sense?</span><textarea name="identity" rows="3" required /></label>
-            <label><span><b>12</b>ACCOUNT SNAPSHOT — Choose one account. Record the creditor name, reported balance, reporting date and status.</span><textarea name="snapshot" rows="3" required /></label>
-            <label><span><b>13</b>PLAIN-ENGLISH TRANSLATION — Explain that account in one or two sentences as if you were describing it to someone else.</span><textarea name="translation" rows="3" required /></label>
-            <label><span><b>14</b>INQUIRY SCAN — Name one inquiry you recognize, or one inquiry you would verify. What type of check does it appear to be?</span><textarea name="inquiry" rows="3" required /></label>
-            <label><span><b>15</b>TRIAGE — Choose one item and label it Green, Yellow or Red. Explain your next step.</span><textarea name="triage" rows="3" required /></label>
+            <label><span><b>12</b>PLAIN-ENGLISH TRANSLATION — Explain that account in one or two sentences as if you were describing it to someone else.</span><textarea name="translation" rows="3" required /></label>
+            <label><span><b>13</b>INQUIRY SCAN — Name one inquiry you recognize, or one inquiry you would verify. What type of check does it appear to be?</span><textarea name="inquiry" rows="3" required /></label>
+            <label><span><b>14</b>TRIAGE — Choose one item and label it Green, Yellow or Red. Explain your next step.</span><textarea name="triage" rows="3" required /></label>
             <label className="checkin-consent"><input type="checkbox" required /><span>I reviewed my answers and understand that this is educational information, not financial advice.</span></label><button className="reader-primary">Complete Course 1.3 <ArrowRight /></button><small><ShieldCheck />Do not include full account numbers, SIN numbers, passwords or other sensitive identifiers.</small>
           </form></div>}
         </section>

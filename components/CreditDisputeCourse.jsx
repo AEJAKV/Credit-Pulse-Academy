@@ -1,10 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
-  ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, Clock3,
-  FileCheck2, FileSearch, FolderOpen, Landmark, Lightbulb, ListChecks,
-  LockKeyhole, Menu, SearchCheck, ShieldAlert, ShieldCheck, X,
+  ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, Clock3,
+  FileCheck2, FileSearch, FileText, FolderOpen, Landmark, Lightbulb, ListChecks,
+  LockKeyhole, Mail, Menu, Plus, SearchCheck, ShieldAlert, ShieldCheck, X,
 } from "lucide-react";
 import { Brand } from "./Brand";
 import { course14Glossary, course14Sections } from "../lib/course-14-data";
@@ -23,20 +24,20 @@ const errorExamples = [
 ];
 
 const evidenceTabs = [
-  ["TAB A", "The disputed field", "Copy the exact account, month, balance, status or inquiry you believe is wrong. Use only a partial account number in your working notes."],
-  ["TAB B", "The report details", "Record the bureau, report date, creditor or lender name, and enough of the account identifier to find the item safely."],
-  ["TAB C", "The proof", "Choose the smallest useful set of statements, payment confirmations, lender letters, closure notices or other records that directly support your position."],
-  ["TAB D", "The evidence note", "Beside each document, write one sentence: “This proves ___.” If the sentence has nothing to do with the disputed fact, the document may not belong in this case file."],
-  ["TAB E", "The correction", "Ask for one clear outcome: correct the payment status, update the balance/status, remove an account that is not yours, or investigate another specific factual error."],
+  ["TAB A", "The disputed field", "Copy the exact account, month, balance, status or inquiry you believe is wrong. Use only a partial account number in your working notes.", FileSearch],
+  ["TAB B", "The report details", "Record the bureau, report date, creditor or lender name, and enough of the account identifier to find the item safely.", FileText],
+  ["TAB C", "The proof", "Choose the smallest useful set of statements, payment confirmations, lender letters, closure notices or other records that directly support your position.", FileCheck2],
+  ["TAB D", "The evidence note", "Beside each document, write one sentence: “This proves ___.” If the sentence has nothing to do with the disputed fact, the document may not belong in this case file.", ListChecks],
+  ["TAB E", "The correction", "Ask for one clear outcome: correct the payment status, update the balance/status, remove an account that is not yours, or investigate another specific factual error.", CheckCircle2],
 ];
 
 const disputePieces = [
-  ["Report", "Which bureau report are you referring to, and what is its date?"],
-  ["Account", "Which lender/account is involved? Use a safe partial account identifier."],
-  ["Period or field", "Which month, payment, balance, status or inquiry is wrong?"],
-  ["Reported fact", "What does the report currently say?"],
-  ["Evidence", "What document supports the information you believe is correct?"],
-  ["Request", "What precise correction or investigation are you asking for?"],
+  ["Report", "Which bureau report are you referring to, and what is its date?", FolderOpen],
+  ["Account", "Which lender/account is involved? Use a safe partial account identifier.", Landmark],
+  ["Period or field", "Which month, payment, balance, status or inquiry is wrong?", SearchCheck],
+  ["Reported fact", "What does the report currently say?", FileText],
+  ["Evidence", "What document supports the information you believe is correct?", FileCheck2],
+  ["Request", "What precise correction or investigation are you asking for?", ArrowRight],
 ];
 
 const logFields = [
@@ -68,6 +69,122 @@ function Heading({ number, kicker, title }) {
 }
 function Myth({ children, reality }) {
   return <article><span>MYTH</span><p>“{children}”</p><div><CheckCircle2 />{reality}</div></article>;
+}
+
+const disputeCarouselSlides = [
+  { src: "/images/course-1-4/ca-4.1.webp", alt: "Building a focused case file with the disputed fact and supporting evidence." },
+  { src: "/images/course-1-4/ca4.2.webp", alt: "Submitting a dispute to a Canadian credit bureau and logging the reference number." },
+];
+
+function DisputeImageCarousel() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const interval = window.setInterval(() => setActiveSlide((current) => (current + 1) % disputeCarouselSlides.length), 4000);
+    return () => window.clearInterval(interval);
+  }, [paused]);
+
+  function showSlide(index) {
+    setActiveSlide((index + disputeCarouselSlides.length) % disputeCarouselSlides.length);
+  }
+
+  return <section
+    className="course-image-carousel dispute-image-carousel"
+    aria-label="Course image carousel"
+    aria-roledescription="carousel"
+    onMouseEnter={() => setPaused(true)}
+    onMouseLeave={() => setPaused(false)}
+    onFocusCapture={() => setPaused(true)}
+    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+  >
+    <div className="carousel-viewport">
+      <div className="carousel-track" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
+        {disputeCarouselSlides.map((slide, index) => <div className="carousel-slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${disputeCarouselSlides.length}`} aria-hidden={activeSlide !== index} key={slide.src}>
+          <Image
+            src={slide.src}
+            alt={slide.alt}
+            fill
+            sizes="(max-width: 1050px) min(560px, 100vw), 560px"
+          />
+        </div>)}
+      </div>
+    </div>
+    <button className="carousel-arrow previous" type="button" onClick={() => showSlide(activeSlide - 1)} aria-label="Previous image"><ChevronLeft /></button>
+    <button className="carousel-arrow next" type="button" onClick={() => showSlide(activeSlide + 1)} aria-label="Next image"><ChevronRight /></button>
+    <div className="carousel-dots" aria-label="Choose an image">{disputeCarouselSlides.map((slide, index) => <button key={slide.src} type="button" className={activeSlide === index ? "active" : ""} onClick={() => showSlide(index)} aria-label={`Show image ${index + 1}`} aria-current={activeSlide === index ? "true" : undefined} />)}</div>
+    <span className="carousel-status" aria-live="polite">Image {activeSlide + 1} of {disputeCarouselSlides.length}</span>
+  </section>;
+}
+
+function DisputeEvidenceCarousel() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [paused, setPaused] = useState(false);
+  const maxSlide = Math.max(0, evidenceTabs.length - visibleCount);
+  const displayedSlide = Math.min(activeSlide, maxSlide);
+
+  useEffect(() => {
+    const updateVisibleCount = () => {
+      const width = window.innerWidth;
+      setVisibleCount(width >= 1100 ? 3 : width >= 700 ? 2 : 1);
+    };
+    updateVisibleCount();
+    window.addEventListener("resize", updateVisibleCount, { passive: true });
+    return () => window.removeEventListener("resize", updateVisibleCount);
+  }, []);
+
+  useEffect(() => {
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const interval = window.setInterval(() => setActiveSlide((current) => (current >= maxSlide ? 0 : current + 1)), 3800);
+    return () => window.clearInterval(interval);
+  }, [maxSlide, paused]);
+
+  const slidePercent = (displayedSlide * 100) / visibleCount;
+  const slideGap = (displayedSlide * 18) / visibleCount;
+
+  return <section
+    className="dispute-evidence-carousel"
+    data-visible={visibleCount}
+    aria-label="Evidence file tabs"
+    aria-roledescription="carousel"
+    onMouseEnter={() => setPaused(true)}
+    onMouseLeave={() => setPaused(false)}
+    onFocusCapture={() => setPaused(true)}
+    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+  >
+    <div className="dispute-evidence-viewport">
+      <div className="dispute-evidence-track" style={{ transform: `translateX(calc(-${slidePercent}% - ${slideGap}px))` }}>
+        {evidenceTabs.map(([tab, title, copy, Icon], index) => <article key={tab} aria-label={`${index + 1} of ${evidenceTabs.length}`}>
+          <div className="dispute-evidence-image" aria-hidden="true">
+            <Image
+              src={`/images/course-1-4/caro-4.${index + 1}.webp`}
+              alt=""
+              fill
+              sizes="(max-width: 699px) calc(100vw - 64px), (max-width: 1099px) calc(50vw - 36px), 276px"
+            />
+          </div>
+          <div className="dispute-evidence-badge" aria-hidden="true"><Icon /></div>
+          <div className="dispute-evidence-copy">
+            <span>{tab}</span>
+            <h3>{title}</h3>
+            <p>{copy}</p>
+          </div>
+        </article>)}
+      </div>
+    </div>
+    <div className="dispute-evidence-controls">
+      <div className="dispute-evidence-dots" aria-label="Choose a group of evidence tabs">
+        {Array.from({ length: maxSlide + 1 }, (_, index) => <button key={index} type="button" className={displayedSlide === index ? "active" : ""} onClick={() => setActiveSlide(index)} aria-label={`Show tab group ${index + 1}`} aria-current={displayedSlide === index ? "true" : undefined} />)}
+      </div>
+      <div>
+        <button type="button" onClick={() => setActiveSlide((current) => (current <= 0 ? maxSlide : current - 1))} aria-label="Previous evidence tabs"><ChevronLeft /></button>
+        <button type="button" onClick={() => setActiveSlide((current) => (current >= maxSlide ? 0 : current + 1))} aria-label="Next evidence tabs"><ChevronRight /></button>
+      </div>
+    </div>
+    <span className="carousel-status" aria-live="polite">Showing tab {displayedSlide + 1} through {Math.min(displayedSlide + visibleCount, evidenceTabs.length)} of {evidenceTabs.length}</span>
+  </section>;
 }
 
 export function CreditDisputeCourse({ course }) {
@@ -108,7 +225,7 @@ export function CreditDisputeCourse({ course }) {
     {menuOpen && <button className="reader-scrim" aria-label="Close course contents" onClick={() => setMenuOpen(false)} />}
 
     <main className="reader-main">
-      <section className="reader-hero dispute-hero" id="start"><div className="reader-hero-copy"><p className="reader-kicker">{course.eyebrow}</p><h1>{course.title}</h1><p className="reader-subtitle">{course.subtitle}</p><p className="reader-deck">What works better is a small, organized case file: one disputed fact, the proof that supports you, and one clear correction request.</p><div className="reader-meta"><span><Clock3 />{course.duration}</span><span><FileCheck2 />One course check-in</span></div><button className="reader-primary" onClick={() => goToSection("error")}>Open the case file <ArrowRight /></button></div><div className="case-hero-visual" aria-hidden="true"><div className="case-folder"><span>CASE FILE</span><strong>FACT<br />EVIDENCE<br />REQUEST</strong><FileSearch /></div><div className="case-stamp"><Check />READY TO INVESTIGATE</div></div></section>
+      <section className="reader-hero dispute-hero" id="start"><div className="reader-hero-media dispute-hero-media" aria-hidden="true"><Image src="/images/course-1-4/course1.4.webp" alt="" fill priority sizes="(max-width: 1050px) 100vw, calc(100vw - 272px)" /></div><div className="reader-hero-copy"><p className="reader-kicker">{course.eyebrow}</p><h1>{course.title}</h1><p className="reader-subtitle">{course.subtitle}</p><p className="reader-deck">What works better is a small, organized case file: one disputed fact, the proof that supports you, and one clear correction request.</p><div className="reader-meta"><span><Clock3 />{course.duration}</span><span><FileCheck2 />One course check-in</span></div><button className="reader-primary" onClick={() => goToSection("error")}>Open the case file <ArrowRight /></button></div><div className="case-hero-visual" aria-hidden="true"><div className="case-folder-stack"><span className="case-paper-back" /><span className="case-paper-mid" /><div className="case-folder"><span className="case-folder-rivet" /><span className="case-folder-label">CASE FILE</span><strong>FACT<br />EVIDENCE<br />REQUEST</strong><FileSearch /></div><div className="case-stamp"><Check />READY TO INVESTIGATE</div></div></div></section>
 
       <div className="reader-body">
         <section className="reader-section reader-intro">
@@ -121,19 +238,35 @@ export function CreditDisputeCourse({ course }) {
 
         <section className="reader-section" id="error">
           <Heading number="01" kicker="CASE FILE RULE 1" title="Decide Whether You Have an Error" />
-          <p className="reader-lead">Start with the exact line you believe is wrong. A dispute is strongest when you can finish this sentence: “My report says ___, but the accurate information is ___.” If you cannot yet fill in both blanks, you may need more information before you file.</p>
+          <div className="sentence-builder">
+            <div className="sentence-builder-card">
+              <span className="sentence-builder-kicker">FILL IN THE BLANKS</span>
+              <h3>Finish this sentence before you file</h3>
+              <p>Start with the exact line you believe is wrong. A dispute is strongest when you can finish this sentence: <strong>“My report says ___, but the accurate information is ___.”</strong> If you cannot yet fill in both blanks, you may need more information before you file.</p>
+            </div>
+            <div className="sentence-builder-tiles">
+              <article><span className="tile-plus"><Plus /></span><FileSearch /><b>Report says</b></article>
+              <article><span className="tile-plus"><Plus /></span><CheckCircle2 /><b>Accurate info</b></article>
+              <article><span className="tile-plus"><Plus /></span><FileCheck2 /><b>Evidence needed</b></article>
+            </div>
+          </div>
           <p>Examples of information worth checking include:</p>
           <div className="error-example-grid">{errorExamples.map(([title, copy]) => <article key={title}><CheckCircle2 /><p><strong>{title}</strong> — {copy}</p></article>)}</div>
           <h2 className="bureau-inline-heading">Quick Myth Check: Before You Open the File Folder</h2>
           <div className="myth-list"><Myth reality="A dispute is for information you believe is inaccurate or incomplete. Accurate negative information does not become an error simply because it is inconvenient.">If an item hurts my score, the bureau has to delete it when I dispute it.</Myth><Myth reality="The useful evidence is the evidence that proves the specific point in dispute. Extra unrelated pages can bury the fact you need someone to see.">A 40-page evidence package is automatically stronger than a four-page one.</Myth><Myth reality="Treat each bureau report as its own file. If the same error appears on both, use each bureau’s dispute process and keep separate confirmation details.">If the mistake appears at Equifax and TransUnion, disputing with one automatically fixes the other.</Myth></div>
           <div className="reader-links"><SourceLink href="https://www.transunion.ca/assistance/credit-report-disputes">TransUnion Canada: Credit Report Disputes</SourceLink></div>
-          <Spotlight>Disputing is not the same as asking for a clean slate. TransUnion explains that only inaccurate information may be removed through the dispute process; accurate negative information can remain as permitted by law.</Spotlight>
+          <div className="reader-context-media dispute-context-media">
+            <div className="reader-context-copy">
+              <Spotlight>Disputing is not the same as asking for a clean slate. TransUnion explains that only inaccurate information may be removed through the dispute process; accurate negative information can remain as permitted by law.</Spotlight>
+            </div>
+            <DisputeImageCarousel />
+          </div>
         </section>
 
         <section className="reader-section" id="evidence">
           <Heading number="02" kicker="CASE FILE RULE 2" title="Build a Focused Evidence File" />
           <p className="reader-lead">Think small and specific. You are not writing your financial autobiography. You are building a file that lets another person understand exactly what is wrong and exactly what supports the correction.</p>
-          <div className="evidence-tabs">{evidenceTabs.map(([tab, title, copy]) => <article key={tab}><span>{tab}</span><div><h3>{title} —</h3><p>{copy}</p></div></article>)}</div>
+          <DisputeEvidenceCarousel />
           <div className="privacy-note"><ShieldCheck /><p><strong>PRIVACY NOTE</strong> Keep copies for yourself and redact unrelated sensitive information where appropriate. Do not put a full SIN or unnecessary full account numbers into a course worksheet. Follow the bureau’s current secure submission instructions for the actual dispute.</p></div>
           <Spotlight>Evidence wins by relevance, not weight. A payment confirmation that addresses the exact month in dispute can be more useful than a small paper weather system of unrelated statements.</Spotlight>
           <div className="story-card dispute-story"><div className="story-content"><p className="reader-kicker">CASE STORY</p><h3>Marcus and the 60-Day Late That Wasn’t</h3><p>Marcus checks his report and sees a May payment marked 60 days late. His first draft is basically: “THIS IS WRONG. PLEASE FIX IT.” It has conviction. It also has the investigative value of a smoke alarm that only yells “something!”</p><p>So Marcus slows down. His May statement shows the due date. His payment confirmation shows the payment was received before that date. He records the bureau, report date, lender and account ending. Now he can point to one disputed month and two pieces of evidence that speak directly to it.</p><p>His case changes from a complaint into an investigable request. He is not asking anyone to guess what happened. He is showing the reported fact, the fact he believes is accurate, and the proof supporting the difference.</p></div></div>
@@ -142,9 +275,21 @@ export function CreditDisputeCourse({ course }) {
         <section className="reader-section" id="dispute">
           <Heading number="03" kicker="CASE FILE RULE 3" title="Write an Investigable Dispute" />
           <p className="reader-lead">A useful dispute message can usually be built from six pieces:</p>
-          <ol className="priority-list dispute-piece-list">{disputePieces.map(([title, copy], index) => <li key={title}><span>{index + 1}</span><div><h3>{title} —</h3><p>{copy}</p></div></li>)}</ol>
+          <ol className="priority-list dispute-piece-list">{disputePieces.map(([title, copy, Icon], index) => <li key={title}><span>{index + 1}</span><div><h3><Icon size={17} aria-hidden="true" />{title} —</h3><p>{copy}</p></div></li>)}</ol>
           <h2 className="bureau-inline-heading">A Clear Example</h2>
-          <blockquote>“My credit report dated July 15 lists the May payment for account ending 4432 as 60 days late. The attached May statement and payment confirmation show the payment was received before the due date. Please investigate the May payment status and correct it if your investigation confirms the reporting error.”</blockquote>
+          <div className="dispute-example-panel">
+            <div className="dispute-example-card">
+              <div className="dispute-example-card-head">
+                <span className="dispute-example-icon"><Mail /></span>
+                <div>
+                  <span>SAMPLE DISPUTE MESSAGE</span>
+                  <strong>Re: Account ending 4432 — May payment status</strong>
+                </div>
+              </div>
+              <p>My credit report dated July 15 lists the May payment for account ending 4432 as 60 days late. The attached May statement and payment confirmation show the payment was received before the due date. Please investigate the May payment status and correct it if your investigation confirms the reporting error.</p>
+              <div className="dispute-example-card-foot"><FileCheck2 /><span>Structured, factual, investigable — no extra noise.</span></div>
+            </div>
+          </div>
           <p>Notice what is missing: a life story, three exclamation marks, and a threat to contact the Prime Minister before lunch. Clear facts make the request easier to follow.</p>
           <div className="reader-links"><SourceLink href="https://www.equifax.ca/personal/dispute-credit-report/">Equifax Canada: How to dispute information on your credit report</SourceLink></div>
           <Spotlight>A good dispute lets the investigator find the account, find the exact field, understand your evidence and know the correction you are requesting without having to decode your frustration.</Spotlight>
@@ -157,7 +302,7 @@ export function CreditDisputeCourse({ course }) {
           <div className="reader-links"><SourceLink href="https://www.canada.ca/en/financial-consumer-agency/services/credit-reports-score/check-errors.html">FCAC: Checking your credit report for errors and fraud</SourceLink><SourceLink href="https://www.equifax.ca/personal/dispute-credit-report/">Equifax Canada: Dispute your credit report</SourceLink><SourceLink href="https://www.transunion.ca/assistance/credit-report-disputes">TransUnion Canada: Credit Report Disputes</SourceLink></div>
           <h2 className="bureau-inline-heading">Your Case Tracking Log</h2>
           <p>Create one log entry every time the case moves. A simple record prevents “I know I submitted this sometime around Tuesday-ish” from becoming your official tracking system.</p>
-          <div className="tracking-log">{logFields.map(([title, copy]) => <div key={title}><strong>{title}</strong><p>{copy}</p></div>)}</div>
+          <div className="case-log">{logFields.map(([title, copy], index) => <article key={title} className={index === logFields.length - 1 ? "case-log-final" : undefined}><span className="case-log-index">{index === logFields.length - 1 ? <Check size={16} /> : String(index + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div>
           <Spotlight>“Investigation completed” and “my report is now correct” are two different checkpoints. Review the updated report and verify the exact field you disputed.</Spotlight>
           <h2 className="bureau-inline-heading">When the Case Looks Like Fraud, Change Gears</h2>
           <p>An account or credit application you never made can be more than a routine reporting mistake. Treat possible identity fraud promptly and seriously. FCAC advises contacting the affected financial institution and both major credit bureaus, and reporting suspected fraud through Canada’s National Fraud Reporting System. The Canadian Anti-Fraud Centre also advises gathering your information, changing compromised passwords, and reporting identity fraud to both credit bureaus and police as appropriate.</p>
@@ -179,16 +324,16 @@ export function CreditDisputeCourse({ course }) {
 
         <section className="reader-section" id="action">
           <Heading number="06" title="Your Action (Fill Out Form): Dispute Case File Builder" />
-          <div className="checkin-intro"><p className="reader-lead">Complete this as a preparation worksheet.</p><p>Do not write a full SIN, full account number, passwords or other unnecessary sensitive information here. For a real dispute, use the bureau or lender’s current secure process.</p></div>
+          <div className="checkin-intro"><div className="activity-reward-pill"><CircleDollarSign aria-hidden="true" /><span>Complete this activity and get <strong>$5</strong> plus <strong>20 Credit Pulse points</strong></span></div><p className="reader-lead">Complete this as a preparation worksheet.</p><p>Do not write a full SIN, full account number, passwords or other unnecessary sensitive information here. For a real dispute, use the bureau or lender’s current secure process.</p></div>
           {complete ? <div className="reader-completion"><span><Check /></span><p className="reader-kicker">COURSE 1.4 COMPLETE</p><h3>Nicely done{learner.name ? `, ${learner.name.split(" ")[0]}` : ""}.</h3><p>Your check-in is saved on this device. You can review any section above or print this page for reference.</p><button className="reader-primary" onClick={() => window.print()}>Print course notes <FileCheck2 /></button></div> : <div className="calculator-frame checkin-form-frame"><form className="checkin-form" onSubmit={submitActivity}>
             <div className="checkin-identity"><label>Full name<input name="name" defaultValue={learner.name} required autoComplete="name" /></label><label>Email address<input name="email" type="email" defaultValue={learner.email} required autoComplete="email" /></label></div>
-            <label><span><b>11</b>CASE ID — Which bureau report are you reviewing, what is the report date, and which creditor/account ending is involved?</span><textarea name="caseId" rows="3" required /></label>
-            <label><span><b>12</b>DISPUTED FACT — Copy or describe the exact field you believe is wrong.</span><textarea name="disputedFact" rows="3" required /></label>
-            <label><span><b>13</b>ACCURATE FACT — What do you believe the information should say instead?</span><textarea name="accurateFact" rows="3" required /></label>
-            <label><span><b>14</b>EVIDENCE — List only the documents that directly support your position. Beside each, write what it proves.</span><textarea name="evidence" rows="4" required /></label>
-            <label><span><b>15</b>CORRECTION REQUEST — Write one sentence stating the investigation/correction you want.</span><textarea name="correction" rows="3" required /></label>
-            <label><span><b>16</b>SUBMISSION LOG — Where will you submit it, when did you submit it, and what case/reference number did you receive?</span><textarea name="submissionLog" rows="3" required /></label>
-            <label><span><b>17</b>VERIFICATION — After the response, what exact field will you re-check on the updated report?</span><textarea name="verification" rows="3" required /></label>
+            <label><span><b>11</b>CASE ID — Which report and which account is this about? (bureau, date, and the account)</span><textarea name="caseId" rows="3" required /></label>
+            <label><span><b>12</b>DISPUTED FACT — What does the report say right now that you believe is wrong?</span><textarea name="disputedFact" rows="3" required /></label>
+            <label><span><b>13</b>ACCURATE FACT — What should it say instead?</span><textarea name="accurateFact" rows="3" required /></label>
+            <label><span><b>14</b>EVIDENCE — What documents back this up, and what does each one prove?</span><textarea name="evidence" rows="4" required /></label>
+            <label><span><b>15</b>CORRECTION REQUEST — In one sentence, what correction are you asking for?</span><textarea name="correction" rows="3" required /></label>
+            <label><span><b>16</b>SUBMISSION LOG — Where and when did you submit this, and do you have a reference number?</span><textarea name="submissionLog" rows="3" required /></label>
+            <label><span><b>17</b>VERIFICATION — Once you hear back, what will you check on the updated report to confirm it's fixed?</span><textarea name="verification" rows="3" required /></label>
             <label className="checkin-consent"><input type="checkbox" required /><span>I reviewed my answers and understand that this is educational information, not financial advice.</span></label><button className="reader-primary">Complete Course 1.4 <ArrowRight /></button><small><ShieldCheck />Do not include a full SIN, full account number, passwords or unnecessary sensitive information.</small>
           </form></div>}
         </section>
